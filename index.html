@@ -11,14 +11,13 @@
       font-family: 'Segoe UI', sans-serif;
       background: linear-gradient(to bottom, #fff0f5, #fdfdfd);
       text-align: center;
-      overflow: hidden;
-      height: 100vh;
     }
 
     .container {
-      max-width: 500px;
+      max-width: 420px;
       margin: auto;
-      padding-top: 60px;
+      padding: 20px;
+      position: relative;
     }
 
     .start {
@@ -29,28 +28,27 @@
 
     .message {
       margin-top: 20px;
-      font-size: 18px;
+      font-size: 16px;
       line-height: 1.6;
-      min-height: 180px;
-      padding: 10px;
+      min-height: 150px;
     }
 
     img {
-      width: 220px;
+      width: 100%;
+      max-width: 250px;
       margin-top: 20px;
       border-radius: 12px;
-      opacity: 0.9;
     }
 
     .buttons {
       margin-top: 20px;
-      display: none;
+      position: relative;
+      height: 120px;
     }
 
     button {
-      padding: 10px 20px;
-      font-size: 18px;
-      margin: 10px;
+      padding: 10px 18px;
+      font-size: 16px;
       border-radius: 10px;
       border: none;
       cursor: pointer;
@@ -59,6 +57,8 @@
     #yesBtn {
       background-color: #ff8fa3;
       color: white;
+      position: relative;
+      z-index: 2;
     }
 
     #noBtn {
@@ -68,18 +68,25 @@
 
     .final {
       margin-top: 25px;
-      font-size: 20px;
+      font-size: 18px;
       color: #444;
       display: none;
     }
 
-    /* floating hearts */
+    audio {
+      margin-top: 20px;
+      width: 100%;
+      max-width: 250px;
+    }
+
+    /* hearts */
     .heart {
-      position: absolute;
+      position: fixed;
       color: #ff6b81;
-      font-size: 16px;
+      font-size: 14px;
       animation: float 6s linear infinite;
       opacity: 0.4;
+      pointer-events: none;
     }
 
     @keyframes float {
@@ -100,16 +107,22 @@
 
 I just want to say sorry.<br><br>
 
-Mali yung ginawa kong pagsisinungaling. Hindi ko dapat ginawa yun, kahit na ginawa ko lang yun dahil gusto kitang maniwala at maayos tayo.<br><br>
+Mali yung ginawa kong pagsisinungaling. Hindi ko dapat ginawa yun, kahit na ginawa ko lang yun dahil gusto kitang maniwala at magkaayos tayo.<br><br>
 
-Pero gusto ko rin maging clear - wala talaga akong ibang babae. Wala akong kinausap na babae.<br><br>
+Pero gusto ko rin maging clear - wala talaga akong ibang babae. Wala akong kinausap na babae. <br><br>
 
-I hope you can understand where I’m coming from. I love you. 🤍">
+I hope you can understand where I’m coming from. I love you mahal ko. 🤍">
     </div>
 
     <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" />
 
-    <div class="buttons" id="buttons">
+    <!-- CAT AUDIO -->
+    <audio controls loop id="bgMusic">
+      <source src="mixkit-cartoon-kitty-begging-meow-92.wav" type="audio/mpeg">
+      Your browser does not support the audio element.
+    </audio>
+
+    <div class="buttons" id="buttons" style="display:none;">
       <p>Will you forgive me?</p>
       <button id="yesBtn">Yes</button>
       <button id="noBtn">No</button>
@@ -119,11 +132,6 @@ I hope you can understand where I’m coming from. I love you. 🤍">
       Thank you 🤍 Take care.
     </div>
   </div>
-
-  <!-- soft music -->
-  <audio autoplay loop>
-    <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_3f0d3b8c3e.mp3?filename=romantic-piano-110194.mp3" type="audio/mpeg">
-  </audio>
 
   <script>
     let running = false;
@@ -136,6 +144,7 @@ I hope you can understand where I’m coming from. I love you. 🤍">
       } else {
         running = false;
         document.getElementById("buttons").style.display = "block";
+        moveButton();
       }
     }
 
@@ -143,12 +152,17 @@ I hope you can understand where I’m coming from. I love you. 🤍">
       e.preventDefault();
       if (!running) {
         running = true;
+
+        // 🔊 autoplay fix for mobile
+        const audio = document.getElementById("bgMusic");
+        audio.play().catch(() => {});
+
         const text = document.getElementById("msg").dataset.text;
         typeWriter(text, 0);
       }
     });
 
-    // YES button
+    // YES
     document.getElementById("yesBtn").addEventListener("click", function () {
       document.getElementById("buttons").style.display = "none";
       document.getElementById("msg").style.display = "none";
@@ -156,19 +170,26 @@ I hope you can understand where I’m coming from. I love you. 🤍">
       document.getElementById("finalText").style.display = "block";
     });
 
-    // NO button behavior
+    // NO logic
     const noBtn = document.getElementById("noBtn");
+    const container = document.querySelector(".buttons");
+
     const texts = [
       "Are you sure?",
       "Please? 🥺",
       "Think again...",
       "Last chance 😅"
     ];
+
     let count = 0;
 
     function moveButton() {
-      const x = Math.random() * (window.innerWidth - 100);
-      const y = Math.random() * (window.innerHeight - 50);
+      const maxX = container.clientWidth - 100;
+      const maxY = container.clientHeight - 40;
+
+      const x = Math.random() * maxX;
+      const y = Math.random() * maxY;
+
       noBtn.style.left = x + "px";
       noBtn.style.top = y + "px";
     }
@@ -187,14 +208,14 @@ I hope you can understand where I’m coming from. I love you. 🤍">
       }
     });
 
-    // floating hearts
+    // hearts
     function createHeart() {
       const heart = document.createElement("div");
       heart.classList.add("heart");
       heart.innerText = "❤";
       heart.style.left = Math.random() * 100 + "vw";
-      document.body.appendChild(heart);
 
+      document.body.appendChild(heart);
       setTimeout(() => heart.remove(), 6000);
     }
 
