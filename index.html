@@ -3,60 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Be My Valentine</title>
+  <title>I'm Sorry</title>
 
   <style>
     body {
       text-align: center;
       font-family: sans-serif;
-      background-color: #fff0f5;
-      position: relative;
+      background: linear-gradient(to bottom, #fff0f5, #ffe4e1);
       overflow: hidden;
       height: 100vh;
-    }
-
-    .answerButton {
-      padding: 10px 20px;
-      font-size: 20px;
-      margin: 10px;
-      cursor: pointer;
-      border-radius: 10px;
-      border: none;
-      background-color: #ffb6c1;
-      transition: 0.3s ease;
-      position: relative;
-    }
-
-    .answerButton:hover {
-      background-color: #ff69b4;
-      color: white;
-    }
-
-    #noButton {
-      position: absolute;
-    }
-
-    .responsive {
-      width: 300px;
-      height: auto;
-      margin-top: 20px;
-    }
-
-    a {
-      color: #222;
-      cursor: pointer;
+      margin: 0;
     }
 
     .wrap {
-      width: 420px;
-      margin: 30px auto;
-      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      margin: 80px auto;
+    }
+
+    .start {
+      font-size: 16px;
+      color: #555;
+      text-decoration: underline;
+      cursor: pointer;
     }
 
     .secret_message {
-      margin-top: 10px;
-      text-align: left;
-      min-height: 120px;
+      margin-top: 20px;
+      font-size: 18px;
+      line-height: 1.6;
+      min-height: 180px;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 12px 25px;
+      font-size: 18px;
+      border-radius: 10px;
+      border: none;
+      background-color: #ff8fa3;
+      color: white;
+      cursor: pointer;
+      display: none;
+    }
+
+    .btn:hover {
+      background-color: #ff4d6d;
+    }
+
+    .final {
+      display: none;
+      font-size: 20px;
+      margin-top: 30px;
+      color: #444;
+    }
+
+    /* Floating hearts */
+    .heart {
+      position: absolute;
+      color: #ff6b81;
+      animation: float 6s linear infinite;
+      font-size: 20px;
+      opacity: 0.7;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh);
+        opacity: 0;
+      }
     }
   </style>
 </head>
@@ -64,85 +86,80 @@
 <body>
 
   <div class="wrap">
-    <a href="#" class="start">click here to start</a>
+    <a href="#" class="start">click here</a>
 
     <div
       class="secret_message"
-      data-text="Hey Hyrea,<br><center><strong>Good Morning!</strong></center><br>
-      Trip ko lang mahal, pagaling ka hehe.<br>
-      Will you be my Valentine? ❤️">
+      data-text="Hey Hyrea,<br><br>
+
+I just want to say sorry.<br><br>
+
+Mali yung ginawa kong pagsisinungaling. Hindi ko dapat ginawa yun, kahit na ginawa ko lang yun dahil gusto kitang mapaniwala at maayos tayo.<br><br>
+
+Pero gusto ko rin maging clear — wala talaga akong ibang babae. Hindi ko lang naipakita sa tamang paraan kaya lalo lang naging magulo.<br><br>
+
+I understand kung ayaw mo na. I respect that.<br><br>
+
+Hindi na kita guguluhin after this.<br><br>
+
+Thank you for everything. Ingat ka palagi.">
+    </div>
+
+    <button class="btn" id="okBtn">I understand</button>
+
+    <div class="final" id="finalMsg">
+      Take care. 🤍
     </div>
   </div>
-
-  <button class="answerButton" id="yesButton" onclick="location.href='thankyou.html'">
-    Yes
-  </button>
-
-  <button class="answerButton" id="noButton">
-    I no no wanna o(╥﹏╥)o
-  </button>
-
-  <br />
-  <img src="cat.gif" alt="cat asking question" class="responsive" />
-
-  <br />
-  <audio controls autoplay loop>
-    <source src="mixkit-cartoon-kitty-begging-meow-92.wav" type="audio/mpeg" />
-    Your browser does not support the audio element.
-  </audio>
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
   <script>
     let running = false;
 
     function typeWriter(text, n) {
       if (n < text.length) {
-        $('.secret_message').html(text.substring(0, n + 1) + " ❤");
-        setTimeout(() => typeWriter(text, n + 1), 80);
+        document.querySelector(".secret_message").innerHTML =
+          text.substring(0, n + 1) + " 🤍";
+        setTimeout(() => typeWriter(text, n + 1), 40);
       } else {
         running = false;
+        document.getElementById("okBtn").style.display = "inline-block";
       }
     }
 
-    $('.start').click(function (e) {
+    document.querySelector(".start").addEventListener("click", function (e) {
       e.preventDefault();
       if (!running) {
         running = true;
-        const text = $('.secret_message').data('text');
+        const text = document
+          .querySelector(".secret_message")
+          .getAttribute("data-text");
         typeWriter(text, 0);
       }
     });
 
-    const noButton = document.getElementById("noButton");
-    const yesButton = document.getElementById("yesButton");
+    document.getElementById("okBtn").addEventListener("click", function () {
+      document.querySelector(".secret_message").style.display = "none";
+      this.style.display = "none";
+      document.getElementById("finalMsg").style.display = "block";
+    });
 
-    const texts = ["Really?", "Are you sure?", "Come on...", "Last chance!", "Fine 😢", "Yes"];
-    let clickCount = 0;
+    // Floating hearts generator
+    function createHeart() {
+      const heart = document.createElement("div");
+      heart.classList.add("heart");
+      heart.innerText = "❤";
+      heart.style.left = Math.random() * 100 + "vw";
+      heart.style.fontSize = Math.random() * 10 + 15 + "px";
+      heart.style.animationDuration = Math.random() * 3 + 3 + "s";
 
-    function getRandomPosition() {
-      const x = Math.random() * (window.innerWidth - noButton.offsetWidth);
-      const y = Math.random() * (window.innerHeight - noButton.offsetHeight);
-      return { x, y };
+      document.body.appendChild(heart);
+
+      setTimeout(() => {
+        heart.remove();
+      }, 6000);
     }
 
-    noButton.addEventListener("click", function () {
-      let currentSize = parseInt(getComputedStyle(yesButton).fontSize);
-      yesButton.style.fontSize = currentSize + 15 + "px";
-
-      if (clickCount < texts.length - 1) {
-        noButton.textContent = texts[clickCount];
-        clickCount++;
-
-        const { x, y } = getRandomPosition();
-        noButton.style.left = x + "px";
-        noButton.style.top = y + "px";
-      } else {
-        noButton.textContent = "Yes";
-        noButton.style.position = "relative";
-        noButton.onclick = () => location.href = "thankyou.html";
-      }
-    });
+    setInterval(createHeart, 500);
   </script>
 
 </body>
